@@ -27,8 +27,12 @@
       canvas.width = document.documentElement.clientWidth;
       //获取文档内容高度给canvas
       canvas.height = document.documentElement.clientHeight;
-      let ctx = canvas.getContext("2d");
-      ctx.fillStyle = "rgb(0,0,0)";//颜色
+        let ctx = canvas.getContext("2d");
+        ctx.fillStyle = "rgb(0,0,0)";//颜色
+        ctx.strokeStyle = "rgb(0,0,0)";
+
+        ctx.lineWidth = 5;
+        ctx.lineCap = "round";
 
       let draw =false;
       //最后位置
@@ -44,29 +48,29 @@
         ctx.lineTo(x2, y2);
         ctx.stroke();
       }
-
-      //鼠标放下为ture
-      canvas.onmousedown = (e) => {
-        draw = true;
-        lastPlace =[e.clientX, e.clientY];//第一次画位置
-      };
-      canvas.ontouchstart = (e) => {
-        draw = true;
-        lastPlace =[e.touches[0].clientX, e.touches[0].clientY];//第一次画位置
-      };
-
-      canvas.onmousemove = (e) => {
-        if(draw === true){
-            drawLine(lastPlace[0], lastPlace[1], e.clientX, e.clientY);
-            lastPlace =[e.clientX, e.clientY];//这次作为上次的位置
-        }else if(isTouchDevice){
+      if(isTouchDevice){
+        canvas.ontouchstart = (e) => {
+            draw = true;
+            lastPlace =[e.touches[0].clientX, e.touches[0].clientY];//第一次画位置
+        };
           canvas.ontouchmove = (e) => {
             drawLine(lastPlace[0], lastPlace[1], e.touches[0].clientX, e.touches[0].clientY);
             lastPlace =[e.touches[0].clientX, e.touches[0].clientY];
             };
+
+        }else{
+             //鼠标放下为ture
+            canvas.onmousedown = (e) => {
+                draw = true;
+                lastPlace =[e.clientX, e.clientY];//第一次画位置
+            };
+            canvas.onmousemove = (e) => {
+                if(draw === true){
+                    drawLine(lastPlace[0], lastPlace[1], e.clientX, e.clientY);
+                    lastPlace =[e.clientX, e.clientY];//这次作为上次的位置
+                }
+             }
         }
-      
-      }
       canvas.onmouseup = (e) => {
         draw = false;
       };
