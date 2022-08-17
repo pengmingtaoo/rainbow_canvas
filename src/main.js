@@ -53,7 +53,7 @@ function monitorToUser() {
       let x = e.touches[0].clientX;
       let y = e.touches[0].clientY;
       if (iseEraser) {//要使用eraser
-        ctx.clearRect(x - lWidth/2, y - lWidth/2, lWidth, lWidth);
+        clearCircle(x, y, lWidth/2);
       } else { 
         drawCircle(x,y,lWidth/2);
         lastPlace =[x, y];//第一次画位置
@@ -65,7 +65,7 @@ function monitorToUser() {
       let y = e.touches[0].clientY;
       if (!draw) { return }
       if (iseEraser) {
-        ctx.clearRect(x - lWidth/2, y - lWidth/2, lWidth, lWidth);
+        clearCircle(x, y, lWidth/2);
         lastPlace = [x, y];
       } else { 
         let newPlace = [x, y];
@@ -81,9 +81,8 @@ function monitorToUser() {
       let y = e.clientY;
       draw = true;
       if (iseEraser) {//要使用eraser
-        
-        ctx.clearRect(x - lWidth/2, y - lWidth/2, lWidth, lWidth);
-      
+      // ctx.clearRect(x - lWidth/2, y - lWidth/2, lWidth, lWidth);
+        clearCircle(x, y, lWidth/2);
         lastPlace =[x, y];
       }else{
         drawCircle(x,y,lWidth/2);
@@ -95,7 +94,8 @@ function monitorToUser() {
       let y = e.clientY;
       if (!draw) { return }
       if (iseEraser) {
-        ctx.clearRect(x - lWidth/2, y - lWidth/2, lWidth, lWidth);
+      //  ctx.clearRect(x - lWidth/2, y - lWidth/2, lWidth, lWidth);
+      clearCircle(x, y, lWidth/2);
       } else { 
         let newPlace = [x, y];
         drawLine(lastPlace[0], lastPlace[1], x, y);
@@ -113,6 +113,14 @@ function monitorToUser() {
     };
 }
 
+function clearCircle(x, y, radius) { 
+  ctx.save()
+  ctx.beginPath()
+  ctx.arc(x,y,radius,0,2*Math.PI);
+  ctx.clip()
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.restore();
+}
 //画点函数
 function drawCircle(x,y,radius){
     // 新建一条路径，生成之后，图形绘制命令被指向到路径上生成路径。
@@ -125,17 +133,7 @@ function drawCircle(x,y,radius){
     // 闭合路径之后图形绘制命令又重新指向到上下文中。
     ctx.closePath();
 }
-function drawWhiteCircle(x,y,radius){
-  // 新建一条路径，生成之后，图形绘制命令被指向到路径上生成路径。
-  ctx.beginPath();
-  // 画一个以（x,y）为圆心的以radius为半径的圆弧（圆），
-  // 从startAngle开始到endAngle结束，按照anticlockwise给定的方向（默认为顺时针）来生成。
-  ctx.arc(x,y,radius,0,Math.PI*2);
-  // 通过填充路径的内容区域生成实心的图形
-  ctx.fill();
-  // 闭合路径之后图形绘制命令又重新指向到上下文中。
-  ctx.closePath();
-}
+
 
 //画线
 function drawLine(x1, y1, x2, y2) {
