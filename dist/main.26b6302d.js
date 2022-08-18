@@ -134,7 +134,8 @@ var iseEraser = false; //初始化画笔
 
 var isPenDetail = false; //初始画笔粗细
 
-var lWidth = 5;
+var lWidth = 4;
+var radius = 2;
 autoSetSize();
 monitorToUser();
 changePenColor(); //获取文本大小函数
@@ -172,10 +173,11 @@ function monitorToUser() {
 
       if (iseEraser) {
         //要使用eraser
-        clearCircle(x, y, lWidth / 2);
+        clearCircle(x, y, radius);
+        lastPlace = [x, y];
       } else {
-        drawCircle(x, y, lWidth / 2);
-        lastPlace = [x, y]; //第一次画位置
+        drawCircle(x, y, radius);
+        lastPlace = [x, y];
       }
     }; //手指移动
 
@@ -189,7 +191,7 @@ function monitorToUser() {
       }
 
       if (iseEraser) {
-        clearCircle(x, y, lWidth / 2);
+        moveHandler(lastPlace[0], lastPlace[1], x, y);
         lastPlace = [x, y];
       } else {
         var newPlace = [x, y];
@@ -207,10 +209,10 @@ function monitorToUser() {
       if (iseEraser) {
         //要使用eraser
         // ctx.clearRect(x - lWidth/2, y - lWidth/2, lWidth, lWidth);
-        clearCircle(x, y, lWidth / 2);
+        clearCircle(x, y, radius);
         lastPlace = [x, y];
       } else {
-        drawCircle(x, y, lWidth / 2);
+        drawCircle(x, y, radius);
         lastPlace = [x, y];
       }
     };
@@ -225,7 +227,8 @@ function monitorToUser() {
 
       if (iseEraser) {
         //  ctx.clearRect(x - lWidth/2, y - lWidth/2, lWidth, lWidth);
-        clearCircle(x, y, lWidth / 2);
+        moveHandler(lastPlace[0], lastPlace[1], x, y);
+        lastPlace = [x, y];
       } else {
         var newPlace = [x, y];
         drawLine(lastPlace[0], lastPlace[1], x, y);
@@ -243,15 +246,6 @@ function monitorToUser() {
   canvas.ontouchend = function (e) {
     draw = false;
   };
-}
-
-function clearCircle(x, y, radius) {
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(x, y, radius, 0, 2 * Math.PI);
-  ctx.clip();
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.restore();
 } //画点函数
 
 
@@ -260,7 +254,7 @@ function drawCircle(x, y, radius) {
   ctx.beginPath(); // 画一个以（x,y）为圆心的以radius为半径的圆弧（圆），
   // 从startAngle开始到endAngle结束，按照anticlockwise给定的方向（默认为顺时针）来生成。
 
-  ctx.arc(x, y, radius, 0, Math.PI * 2); // 通过填充路径的内容区域生成实心的图形
+  ctx.arc(x, y, lWidth / 2, 0, Math.PI * 2); // 通过填充路径的内容区域生成实心的图形
 
   ctx.fill(); // 闭合路径之后图形绘制命令又重新指向到上下文中。
 
@@ -276,6 +270,43 @@ function drawLine(x1, y1, x2, y2) {
   ctx.moveTo(x1, y1);
   ctx.lineTo(x2, y2);
   ctx.stroke();
+} //橡皮圆点
+
+
+function clearCircle(x, y, radius) {
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(x, y, lWidth / 2, 0, 2 * Math.PI);
+  ctx.clip();
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.restore();
+}
+
+function moveHandler(x1, y1, x2, y2) {
+  //获取两个点之间的剪辑区域四个端点
+  var asin = lWidth / 2 * Math.sin(Math.atan((y2 - y1) / (x2 - x1)));
+  var acos = lWidth / 2 * Math.cos(Math.atan((y2 - y1) / (x2 - x1)));
+  var x3 = x1 + asin;
+  var y3 = y1 - acos;
+  var x4 = x1 - asin;
+  var y4 = y1 + acos;
+  var x5 = x2 + asin;
+  var y5 = y2 - acos;
+  var x6 = x2 - asin;
+  var y6 = y2 + acos; //保证线条的连贯，所以在矩形一端画圆
+
+  clearCircle(x2, y2, radius); //清除矩形剪辑区域里的像素
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x3, y3);
+  ctx.lineTo(x5, y5);
+  ctx.lineTo(x6, y6);
+  ctx.lineTo(x4, y4);
+  ctx.closePath();
+  ctx.clip();
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.restore();
 } // 橡皮檫功能
 
 
@@ -353,4 +384,4 @@ for (var i = 0; i < closeBtn.length; i++) {
   _loop(i);
 }
 },{}]},{},["epB2"], null)
-//# sourceMappingURL=main.800ea3fc.js.map
+//# sourceMappingURL=main.26b6302d.js.map
