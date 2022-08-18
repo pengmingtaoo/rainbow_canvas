@@ -16,7 +16,8 @@ let iseEraser = false;
 //初始化画笔
 let isPenDetail = false;
 //初始画笔粗细
-let lWidth = 7;
+let lWidth = 4;
+let radius =2;
 
 autoSetSize();
 monitorToUser();
@@ -53,10 +54,11 @@ function monitorToUser() {
       let x = e.touches[0].clientX;
       let y = e.touches[0].clientY;
       if (iseEraser) {//要使用eraser
-        clearCircle(x, y, lWidth/2);
-      } else { 
-        drawCircle(x,y,lWidth/2);
-        lastPlace =[x, y];//第一次画位置
+        clearCircle(x, y, radius)
+        lastPlace =[x,y];
+      }else{
+        drawCircle(x,y,radius);
+        lastPlace =[x, y];
       }
     };
         //手指移动
@@ -65,9 +67,9 @@ function monitorToUser() {
       let y = e.touches[0].clientY;
       if (!draw) { return }
       if (iseEraser) {
-        clearCircle(x, y, lWidth/2);
-        lastPlace = [x, y];
-      } else { 
+        moveHandler(lastPlace[0],lastPlace[1],x,y);
+        lastPlace = [x,y];
+      } else {
         let newPlace = [x, y];
         drawLine(lastPlace[0], lastPlace[1], x, y);
         lastPlace =newPlace;//这次作为上次的位置
@@ -82,10 +84,10 @@ function monitorToUser() {
       draw = true;
       if (iseEraser) {//要使用eraser
       // ctx.clearRect(x - lWidth/2, y - lWidth/2, lWidth, lWidth);
-        clearCircle(x, y, lWidth/2);
-        lastPlace =[x, y];
+        clearCircle(x, y, radius)
+        lastPlace =[x,y];
       }else{
-        drawCircle(x,y,lWidth/2);
+        drawCircle(x,y,radius);
         lastPlace =[x, y];
       }
   };
@@ -95,7 +97,8 @@ function monitorToUser() {
       if (!draw) { return }
       if (iseEraser) {
       //  ctx.clearRect(x - lWidth/2, y - lWidth/2, lWidth, lWidth);
-      clearCircle(x, y, lWidth/2);
+        moveHandler(lastPlace[0],lastPlace[1],x,y);
+        lastPlace = [x,y];
       } else { 
         let newPlace = [x, y];
         drawLine(lastPlace[0], lastPlace[1], x, y);
@@ -113,21 +116,13 @@ function monitorToUser() {
     };
 }
 
-function clearCircle(x, y, radius) { 
-  ctx.save()
-  ctx.beginPath()
-  ctx.arc(x,y,radius,0,2*Math.PI);
-  ctx.clip()
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.restore();
-}
 //画点函数
 function drawCircle(x,y,radius){
     // 新建一条路径，生成之后，图形绘制命令被指向到路径上生成路径。
     ctx.beginPath();
     // 画一个以（x,y）为圆心的以radius为半径的圆弧（圆），
     // 从startAngle开始到endAngle结束，按照anticlockwise给定的方向（默认为顺时针）来生成。
-    ctx.arc(x,y,radius,0,Math.PI*2);
+    ctx.arc(x,y,lWidth/2,0,Math.PI*2);
     // 通过填充路径的内容区域生成实心的图形
     ctx.fill();
     // 闭合路径之后图形绘制命令又重新指向到上下文中。
@@ -146,13 +141,51 @@ function drawLine(x1, y1, x2, y2) {
   ctx.stroke();
   
   }
+
+//橡皮圆点
+function clearCircle(x, y, radius) {
+  ctx.save()
+  ctx.beginPath()
+  ctx.arc(x,y,lWidth/2,0,2*Math.PI);
+  ctx.clip()
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.restore();
+}
+function moveHandler(x1,y1,x2,y2){
+  //获取两个点之间的剪辑区域四个端点
+  let asin = lWidth/2*Math.sin(Math.atan((y2-y1)/(x2-x1)));
+  let acos = lWidth/2*Math.cos(Math.atan((y2-y1)/(x2-x1)))
+  let x3 = x1+asin;
+  let y3 = y1-acos;
+  let x4 = x1-asin;
+  let y4 = y1+acos;
+  let x5 = x2+asin;
+  let y5 = y2-acos;
+  let x6 = x2-asin;
+  let y6 = y2+acos;
+
+  //保证线条的连贯，所以在矩形一端画圆
+  clearCircle(x2, y2, radius)
+
+  //清除矩形剪辑区域里的像素
+  ctx.save()
+  ctx.beginPath()
+  ctx.moveTo(x3,y3);
+  ctx.lineTo(x5,y5);
+  ctx.lineTo(x6,y6);
+  ctx.lineTo(x4,y4);
+  ctx.closePath();
+  ctx.clip();
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.restore();
+}
+
 // 橡皮檫功能
 eraser.onclick = function(){
       iseEraser = true;
       eraser.classList.add('active');
       brush.classList.remove('active');
 }
-
 
 //改变画笔粗细
 range1.onchange = function () { 
