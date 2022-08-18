@@ -16,7 +16,7 @@ let iseEraser = false;
 //初始化画笔
 let isPenDetail = false;
 //初始画笔粗细
-let lWidth = 5;
+let lWidth = 7;
 
 autoSetSize();
 monitorToUser();

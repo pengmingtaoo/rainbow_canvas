@@ -44,16 +44,16 @@ body {
     border: 2px solid transparent;
 }
 .tools button.save{
-    background-image: url('/save.ab2638ae.png'); 
+    background-image: url('save.2c575a46.png'); 
 }
 .tools button.brush{
-    background-image: url('/pen.34cbd401.png'); 
+    background-image: url('pen.31fedc2b.png'); 
 }
 .tools button.eraser{
-    background-image: url('/eraser.b19ac211.png'); 
+    background-image: url('eraser.44134400.png'); 
 }
 .tools button.clear{
-    background-image: url('/clear.e8b8e7e6.png'); 
+    background-image: url('clear.46734c1d.png'); 
 }
 .tools button.active{
     border-radius: 5px;
@@ -65,7 +65,7 @@ body {
     right: 8px;
     width: 30px;
     height: 30px;
-    background: url('/close.d4d76437.png') center center no-repeat;
+    background: url('close.e948cb09.png') center center no-repeat;
     cursor: pointer;
 }
 .pen-detail{
@@ -157,4 +157,4 @@ input[type='range']::-webkit-slider-thumb {
 }
 
 
-/*# sourceMappingURL=/style.e308ff8e.css.map */
+/*# sourceMappingURL=style.49f368f9.css.map */
