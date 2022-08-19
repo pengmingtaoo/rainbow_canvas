@@ -102,7 +102,7 @@ body {
     border: 1px solid #81A4BD;
     border-radius: 5px;
     color: #808FA2;
-    font-style: 18px;
+    /*font-style: 18px;*/
     background: #fff;
     font-size: 14px;
     display: none;

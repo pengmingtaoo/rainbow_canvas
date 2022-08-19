@@ -23,13 +23,14 @@ let radius =2;
 autoSetSize();
 monitorToUser();
 changePenColor();
+setCanvasBg('white');
 
 //获取文本大小函数
 function autoSetSize(){
   canvasSetSize();
     function canvasSetSize(){
       // 把变化之前的画布内容copy一份，
-      let imgData = ctx.getImageData(0,0,canvas.width,canvas.height);
+      // let imgData = ctx.getImageData(0,0,canvas.width,canvas.height);
       //然后重新画到画布上,
 
 
@@ -38,7 +39,7 @@ function autoSetSize(){
       canvas.width = pageWidth;
       canvas.height = pageHeight;
 
-      ctx.putImageData(imgData,0,0);
+      // ctx.putImageData(imgData,0,0);
   }
 
   window.onresize = function(){
@@ -68,7 +69,7 @@ function monitorToUser() {
           drawCircle(x,y,radius);
           lastPlace =[x, y];
         }
-    }
+    };
    //手指移动
     canvas.ontouchmove = (e) => {
         let x = e.touches[0].clientX;
@@ -195,6 +196,7 @@ function moveHandler(x1,y1,x2,y2){
   ctx.clip();
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.restore();
+  ctx.closePath();
 }
 
 // 橡皮檫功能
@@ -245,9 +247,16 @@ function changePenColor() {
 // 实现清屏
 reSetCanvas.onclick = function(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  // canvasHistory = [];
-  // revocation.classList.remove('active');
+  setCanvasBg('white');
+  canvasHistory=[];
 }
+
+// 重新设置canvas背景颜色
+function setCanvasBg(color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
 // 下载图片
 save.onclick = function(){
   let imgUrl = canvas.toDataURL('image/png');
@@ -267,12 +276,12 @@ let step = -1;
 function record_operation(){
   step++;
   if(step < canvasHistory.length){//历史数组记录的步数
-    canvasHistory.length = step;//
+    canvasHistory.length = step;
   }
 
   // 添加新的绘制记录到历史记录
   canvasHistory.push(canvas.toDataURL());
-  if(step>0){
+  if(step > -1){
     revocation.classList.add('active');
   }
 }
@@ -281,9 +290,9 @@ function record_operation(){
 function canvasRevocation(){
   if(step > 0){
     step--;
-    // ctx.clearRect(0,0,canvas.width,canvas.height);
     let canvasPic = new Image();
     canvasPic.src = canvasHistory[step];
+
     canvasPic.onload =  ()=> {
       ctx.drawImage(canvasPic, 0, 0);
     }
@@ -291,7 +300,7 @@ function canvasRevocation(){
     back_revocation.classList.add('active');
   }else{
     revocation.classList.remove('active');
-    alert('已经是第一步了');
+    alert('已经无法撤回');
   }
 }
 //取消撤回方法
@@ -315,6 +324,7 @@ revocation.onclick = ()=>{
 back_revocation.onclick=()=>{
   canvas_back_revocation();
 }
+
 //close功能
 
 for (let i = 0; i < closeBtn.length; i++) {
@@ -324,8 +334,5 @@ for (let i = 0; i < closeBtn.length; i++) {
     btnParent.classList.remove('active');
   }
 }
-// window.onbeforeunload = function(){
-//   return "Reload site?";
-// };
 
 

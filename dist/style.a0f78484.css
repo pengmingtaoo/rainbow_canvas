@@ -14,8 +14,8 @@ body {
     position: fixed;
     left: 50%;
     bottom: 30px;
-    margin-left: -113px;
-    width: 226px;
+    margin-left: -160px;
+    width: 320px;
     height: 50px;
     display: flex;
     justify-content: center;
@@ -55,6 +55,29 @@ body {
 .tools button.clear{
     background-image: url('clear.46734c1d.png'); 
 }
+.tools button.revocation{
+    background-image: url('revocation_before.b6d6eabe.png');
+}
+.tools button.back_revocation{
+    background-image: url('back_revocation_before.d46d9a9a.png');
+}
+.tools button.revocation.active{
+    background-image: url('revocation.fc6cc54a.png');
+    border-color: transparent;
+}
+.tools button.back_revocation.active{
+    background-image: url('back_revocation.338e62fb.png');
+    border-color: transparent;
+}
+.tools button.save:hover,
+.tools button.brush:hover,
+.tools button.eraser:hover,
+.tools button.clear:hover,
+.tools button.revocation:hover,
+.tools button.back_revocation:hover {
+    border-radius: 5px;
+    background-color: #999;
+}
 .tools button.active{
     border-radius: 5px;
     border-color: #1398E6;
@@ -79,7 +102,7 @@ body {
     border: 1px solid #81A4BD;
     border-radius: 5px;
     color: #808FA2;
-    font-style: 18px;
+    /*font-style: 18px;*/
     background: #fff;
     font-size: 14px;
     display: none;
@@ -157,4 +180,4 @@ input[type='range']::-webkit-slider-thumb {
 }
 
 
-/*# sourceMappingURL=style.49f368f9.css.map */
+/*# sourceMappingURL=style.a0f78484.css.map */
