@@ -44,29 +44,29 @@ body {
     border: 2px solid transparent;
 }
 .tools button.save{
-    background-image: url('../image/save.png'); 
+    background-image: url('/save.ab2638ae.png'); 
 }
 .tools button.brush{
-    background-image: url('../image/pen.png'); 
+    background-image: url('/pen.34cbd401.png'); 
 }
 .tools button.eraser{
-    background-image: url('../image/eraser.png'); 
+    background-image: url('/eraser.b19ac211.png'); 
 }
 .tools button.clear{
-    background-image: url('../image/clear.png'); 
+    background-image: url('/clear.e8b8e7e6.png'); 
 }
 .tools button.revocation{
-    background-image: url('../image/revocation_before.png');
+    background-image: url('/revocation_before.76e72444.png');
 }
 .tools button.back_revocation{
-    background-image: url('../image/back_revocation_before.png');
+    background-image: url('/back_revocation_before.ef2fa0e1.png');
 }
 .tools button.revocation.active{
-    background-image: url('../image/revocation.png');
+    background-image: url('/revocation.a86741f4.png');
     border-color: transparent;
 }
 .tools button.back_revocation.active{
-    background-image: url('../image/back_revocation.png');
+    background-image: url('/back_revocation.ce9ef1db.png');
     border-color: transparent;
 }
 .tools button.save:hover,
@@ -88,7 +88,7 @@ body {
     right: 8px;
     width: 30px;
     height: 30px;
-    background: url('../image/close.png') center center no-repeat;
+    background: url('/close.d4d76437.png') center center no-repeat;
     cursor: pointer;
 }
 .pen-detail{
@@ -178,3 +178,6 @@ input[type='range']::-webkit-slider-thumb {
     border: 2px solid #fff;
     border-radius: 50%;
 }
+
+
+/*# sourceMappingURL=/style.e308ff8e.css.map */

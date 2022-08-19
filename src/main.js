@@ -4,7 +4,8 @@ let brush = document.getElementById('brush');
 let eraser = document.getElementById("eraser");
 let reSetCanvas = document.getElementById("clear");
 let save = document.getElementById("save");
-
+let revocation = document.getElementById("revocation");
+let back_revocation = document.getElementById("back_revocation");
 
 let penDetail = document.getElementById("penDetail");
 let closeBtn = document.getElementsByClassName('closeBtn');
@@ -27,10 +28,17 @@ changePenColor();
 function autoSetSize(){
   canvasSetSize();
     function canvasSetSize(){
+      // 把变化之前的画布内容copy一份，
+      let imgData = ctx.getImageData(0,0,canvas.width,canvas.height);
+      //然后重新画到画布上,
+
+
       let pageWidth = document.documentElement.clientWidth;
       let pageHeight = document.documentElement.clientHeight;
       canvas.width = pageWidth;
       canvas.height = pageHeight;
+
+      ctx.putImageData(imgData,0,0);
   }
 
   window.onresize = function(){
@@ -40,80 +48,87 @@ function autoSetSize(){
 
 //监听鼠标 手机触屏事件 函数
 function monitorToUser() { 
-    //初始化画笔状态
+    //初始化画板状态
   let draw =false;
     //最后画的位置
   let lastPlace;
     //适配手机触摸
   let isTouchDevice = "ontouchstart" in document.documentElement;
-  
+
   if (isTouchDevice) {
     //适配手机 手指放下
     canvas.ontouchstart = (e) => {
-      draw = true;
-      let x = e.touches[0].clientX;
-      let y = e.touches[0].clientY;
-      if (iseEraser) {//要使用eraser
-        clearCircle(x, y, radius)
-        lastPlace =[x,y];
-      }else{
-        drawCircle(x,y,radius);
-        lastPlace =[x, y];
-      }
-    };
-        //手指移动
-    canvas.ontouchmove = (e) => {
-      let x = e.touches[0].clientX;
-      let y = e.touches[0].clientY;
-      if (!draw) { return }
-      if (iseEraser) {
-        moveHandler(lastPlace[0],lastPlace[1],x,y);
-        lastPlace = [x,y];
-      } else {
-        let newPlace = [x, y];
-        drawLine(lastPlace[0], lastPlace[1], x, y);
-        lastPlace =newPlace;//这次作为上次的位置
-      }
-    };
-
-    }else{
-    //PC 鼠标放下为ture
-    canvas.onmousedown = (e) => {
-      let x = e.clientX;
-      let y = e.clientY;
-      draw = true;
-      if (iseEraser) {//要使用eraser
-      // ctx.clearRect(x - lWidth/2, y - lWidth/2, lWidth, lWidth);
-        clearCircle(x, y, radius)
-        lastPlace =[x,y];
-      }else{
-        drawCircle(x,y,radius);
-        lastPlace =[x, y];
-      }
-  };
-    canvas.onmousemove = (e) => {
-      let x = e.clientX;
-      let y = e.clientY;
-      if (!draw) { return }
-      if (iseEraser) {
-      //  ctx.clearRect(x - lWidth/2, y - lWidth/2, lWidth, lWidth);
-        moveHandler(lastPlace[0],lastPlace[1],x,y);
-        lastPlace = [x,y];
-      } else { 
-        let newPlace = [x, y];
-        drawLine(lastPlace[0], lastPlace[1], x, y);
-        lastPlace =newPlace;//这次作为上次的位置
+        draw = true;
+        let x = e.touches[0].clientX;
+        let y = e.touches[0].clientY;
+        if (iseEraser) {//要使用eraser
+          clearCircle(x, y, radius)
+          lastPlace =[x,y];
+        }else{
+          drawCircle(x,y,radius);
+          lastPlace =[x, y];
+        }
     }
-   }
-}
-  //鼠标松开
-  canvas.onmouseup = (e) => {
-    draw = false;
-  };
+   //手指移动
+    canvas.ontouchmove = (e) => {
+        let x = e.touches[0].clientX;
+        let y = e.touches[0].clientY;
+        if (!draw) { return }
+        if (iseEraser) {
+          moveHandler(lastPlace[0],lastPlace[1],x,y);
+          lastPlace = [x,y];
+        } else {
+          let newPlace = [x, y];
+          drawLine(lastPlace[0], lastPlace[1], x, y);
+          lastPlace =newPlace;//这次作为上次的位置
+        }
+    }
     //手指离开
-  canvas.ontouchend = (e) => {
-    draw = false;
-    };
+    canvas.ontouchend = (e) => {
+      draw = false;
+      record_operation();
+    }
+
+  }else{
+
+    //PC
+    //鼠标放下为ture
+    canvas.onmousedown = (e) => {
+        let x = e.clientX;
+        let y = e.clientY;
+        draw = true;
+        if (iseEraser) {//要使用eraser
+        // ctx.clearRect(x - lWidth/2, y - lWidth/2, lWidth, lWidth);
+          clearCircle(x, y, radius)
+          lastPlace =[x,y];
+        }else{
+          drawCircle(x,y,radius);
+          lastPlace =[x, y];
+        }
+    }
+    canvas.onmousemove = (e) => {
+          let x = e.clientX;
+          let y = e.clientY;
+          if (!draw) { return }
+          if (iseEraser) {
+          //  ctx.clearRect(x - lWidth/2, y - lWidth/2, lWidth, lWidth);
+            moveHandler(lastPlace[0],lastPlace[1],x,y);
+            lastPlace = [x,y];
+          } else {
+            let newPlace = [x, y];
+            drawLine(lastPlace[0], lastPlace[1], x, y);
+            lastPlace =newPlace;//这次作为上次的位置
+        }
+    }
+    //鼠标松开
+    canvas.onmouseup = (e) => {
+      draw = false;
+      record_operation();
+    }
+  }
+
+
+
 }
 
 //画点函数
@@ -132,6 +147,7 @@ function drawCircle(x,y,radius){
 
 //画线
 function drawLine(x1, y1, x2, y2) {
+  ctx.save()
   ctx.lineWidth = lWidth;
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
@@ -139,7 +155,7 @@ function drawLine(x1, y1, x2, y2) {
   ctx.moveTo(x1, y1);
   ctx.lineTo(x2, y2);
   ctx.stroke();
-  
+  ctx.closePath();
   }
 
 //橡皮圆点
@@ -150,6 +166,7 @@ function clearCircle(x, y, radius) {
   ctx.clip()
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.restore();
+  ctx.closePath();
 }
 function moveHandler(x1,y1,x2,y2){
   //获取两个点之间的剪辑区域四个端点
@@ -212,9 +229,9 @@ brush.onclick = function () {
 
 //改变画笔颜色
 function changePenColor() { 
-  for (var i = 0; i < ColorPen.length; i++) { 
-    ColorPen[i].onclick = function () { 
-      for (var j = 0; j < ColorPen.length;j++) { 
+  for (var i = 0; i < ColorPen.length; i++) {
+    ColorPen[i].onclick = function () {
+      for (var j = 0; j < ColorPen.length;j++) {
         ColorPen[j].classList.remove('active');
         this.classList.add('active');
         activeColor = this.style.backgroundColor;
@@ -228,6 +245,8 @@ function changePenColor() {
 // 实现清屏
 reSetCanvas.onclick = function(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
+  // canvasHistory = [];
+  // revocation.classList.remove('active');
 }
 // 下载图片
 save.onclick = function(){
@@ -239,13 +258,74 @@ save.onclick = function(){
   saveA.target = '_blank';
   saveA.click();
 }
-//close功能
 
-  for (let i = 0; i < closeBtn.length; i++) {
-    closeBtn[i].onclick = function (e) {
-      console.log(closeBtn[i]);
-        let btnParent = e.target.parentElement;
-        btnParent.classList.remove('active');
+// 实现撤销的功能
+let canvasHistory = [];
+let step = -1;
+
+//记录每一步画画的操作函数
+function record_operation(){
+  step++;
+  if(step < canvasHistory.length){//历史数组记录的步数
+    canvasHistory.length = step;//
+  }
+
+  // 添加新的绘制记录到历史记录
+  canvasHistory.push(canvas.toDataURL());
+  if(step>0){
+    revocation.classList.add('active');
+  }
+}
+
+//撤回方法
+function canvasRevocation(){
+  if(step > 0){
+    step--;
+    // ctx.clearRect(0,0,canvas.width,canvas.height);
+    let canvasPic = new Image();
+    canvasPic.src = canvasHistory[step];
+    canvasPic.onload =  ()=> {
+      ctx.drawImage(canvasPic, 0, 0);
+    }
+    revocation.classList.add('active');
+    back_revocation.classList.add('active');
+  }else{
+    revocation.classList.remove('active');
+    alert('已经是第一步了');
+  }
+}
+//取消撤回方法
+function  canvas_back_revocation(){
+  if(step < canvasHistory.length - 1){
+      step++;
+      let canvasPic = new Image();
+      canvasPic.src = canvasHistory[step];
+      canvasPic.onload = function () {
+        ctx.drawImage(canvasPic, 0, 0);
+      }
+    }else {
+      back_revocation.classList.remove('active')
+      alert('已经是最新的记录了');
     }
 }
+
+revocation.onclick = ()=>{
+  canvasRevocation();
+}
+back_revocation.onclick=()=>{
+  canvas_back_revocation();
+}
+//close功能
+
+for (let i = 0; i < closeBtn.length; i++) {
+  closeBtn[i].onclick = function (e) {
+    console.log(closeBtn[i]);
+    let btnParent = e.target.parentElement;
+    btnParent.classList.remove('active');
+  }
+}
+// window.onbeforeunload = function(){
+//   return "Reload site?";
+// };
+
 
