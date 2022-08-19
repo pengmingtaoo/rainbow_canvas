@@ -69,15 +69,7 @@ body {
     background-image: url('../image/back_revocation.png');
     border-color: transparent;
 }
-.tools button.save:hover,
-.tools button.brush:hover,
-.tools button.eraser:hover,
-.tools button.clear:hover,
-.tools button.revocation:hover,
-.tools button.back_revocation:hover {
-    border-radius: 5px;
-    background-color: #999;
-}
+
 .tools button.active{
     border-radius: 5px;
     border-color: #1398E6;

@@ -69,15 +69,7 @@ body {
     background-image: url('back_revocation.338e62fb.png');
     border-color: transparent;
 }
-.tools button.save:hover,
-.tools button.brush:hover,
-.tools button.eraser:hover,
-.tools button.clear:hover,
-.tools button.revocation:hover,
-.tools button.back_revocation:hover {
-    border-radius: 5px;
-    background-color: #999;
-}
+
 .tools button.active{
     border-radius: 5px;
     border-color: #1398E6;
@@ -180,4 +172,4 @@ input[type='range']::-webkit-slider-thumb {
 }
 
 
-/*# sourceMappingURL=style.a0f78484.css.map */
+/*# sourceMappingURL=style.ef780367.css.map */
