@@ -29,17 +29,10 @@ setCanvasBg('white');
 function autoSetSize(){
   canvasSetSize();
     function canvasSetSize(){
-      // 把变化之前的画布内容copy一份，
-      // let imgData = ctx.getImageData(0,0,canvas.width,canvas.height);
-      //然后重新画到画布上,
-
-
       let pageWidth = document.documentElement.clientWidth;
       let pageHeight = document.documentElement.clientHeight;
       canvas.width = pageWidth;
       canvas.height = pageHeight;
-
-      // ctx.putImageData(imgData,0,0);
   }
 
   window.onresize = function(){
@@ -249,6 +242,10 @@ reSetCanvas.onclick = function(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   setCanvasBg('white');
   canvasHistory=[];
+  step = -1;
+  revocation.classList.remove('active');
+  back_revocation.classList.remove('active');
+
 }
 
 // 重新设置canvas背景颜色
@@ -329,7 +326,6 @@ back_revocation.onclick=()=>{
 
 for (let i = 0; i < closeBtn.length; i++) {
   closeBtn[i].onclick = function (e) {
-    console.log(closeBtn[i]);
     let btnParent = e.target.parentElement;
     btnParent.classList.remove('active');
   }
